@@ -97,14 +97,15 @@ function placeLetters(board, letter, ...algebraicNotation){
 }
 
 function boardToString(board){
-	let bS = " ";
+//Returns a string representation of the board, essentially makes the board
+	let bS = "  ";
 	const len = board.length;
 	const size = Math.sqrt(len);
-	let wall = "";
+	let wall = "  ";
 	let j = 0;
 	let k = size;
 	for (let i = 0; i < size; i++){
-		bS = bS.concat((String.fromCodePoint(32, 32, i+65)) + " ");
+		bS = bS.concat((String.fromCodePoint(32, 32, 32, i+65)));
 	}	
 	bS = bS.concat('\n' + " ");
 	for (let i = 0; i < size; i++){
@@ -112,7 +113,7 @@ function boardToString(board){
 	}
 	bS = bS.concat(wall + "+" + '\n');
 	for(let i = 1; i < size+1; i++){
-		bS = bS.concat(i);
+		bS = bS.concat(" " + i + " ");
 		while(j < k){
 			bS = bS.concat("| " + board[j] + " ");
 			j++;
@@ -123,66 +124,43 @@ function boardToString(board){
 	}
 	return bS;
 }
-/*
-function boardToString(board){
-//Returns a string represntation of the board, makes the board
-	const len = board.length;
-	const wH = Math.sqrt(len);
 
-	const rowA = [];
-	const colA = [];
-	let stringBoard = " ";
-	for (let i = 1; i < wH+1; i++){
-		rowA.push(i);
-		colA.push(i);		
-	}	
-	colA.forEach(n => {
-		colA[n-1] = String.fromCharCode(colA[n-1]+64);
-	});
-	for(let a = 0; a < wH; a++){
-		//console.log(colA[a] + " ");
-		stringBoard = stringBoard.append(colA[a]);		
+function isBoardFull(board){
+//Checkts to see if the board is full or not
+	for(let i = 0; i < board.length; i++){
+		if(board[i] === " "){
+			return false;
+		}
 	}
-	const border = Array(wH+1).join("+---");
-	console.log(border + "+");
-	const wall = Array(wh+1).join("|  ");
-	for(let c = 0; c < wH; c++){
-		console.log(rowA[c] + wall + "|" + '\n'); 
-	}
-	console.log(border + "+");
-	for(let a = 0; a < wH; a++){
-		stringBoard = colA[a] + " ";
-	}
+	return true;
+}
 
-	let colName = "  ";
-	for (let i = 0; i < wH; i++){
-		colName = colName.concat(String.fromCodePoint(i+65, 32, 32, 32));
-	}
-	let boarder = Array(wH + 1).join("+---");
-	
-	const boardS = colName + '\n' + boarder + "+";
-	return boardS;
-
-	let boardStr = "    ";
-	for (let i = 0; i < wH; i++){
-		boardStr = boardStr.concat(String.fromCodePoint(i+65, 32, 32, 32, 32));
-	}
-	const boarder = Array(wH+1).join("  +---") + "  +" + '\n';
-	let roWall = "";
-	for (let i = 1; i < wH+1; i++){
-		roWall = roWall.concat(i + " " +  Array(wH+1).join("|     ") + "|" + '\n' + boarder);
-	}
-	boardStr = boardStr + '\n' + boarder + roWall;
-	/*const b = board;
-	for (let i = 0; i < len; i ++){
-		b[i] = boardStr[i];
-	}
-	return boardStr;	
-	for (let i = 0 ; i < len; i++){
-		if (board[i] !== " ");
+function flip(board, row, col){
+//Flip the contents of the cell to the opposite at the designated row and col, and if there is none then do nothing, returns the new array 
+	const i = rowColToIndex(board, row, col);
+	if (board[i] === " "){
+		return board;	
+	} else {
+		if(board[i] === "X"){
+			board = setBoardCell(board, "O", row, col);
+		} else if (board[i] === "O"){
+			board = setBoardCell(board, "X", row, col);
+		} 	
+		return board;
 	}
 }
-*/
+
+function flipCells(board, cellsToFlip){
+//Passing in the baord and a 3D array, flip the values insde to the opposite and return a single dimensional array.	
+	const arr = cellsToFlip.join().split(",");
+	let i = 0;
+	while(i < arr.length){
+		board = flip(board, arr[i+1], arr[i]);
+		i += 2;	
+	}
+	return board;
+}
+
 module.exports = {
 	//The first term can be named anything, the second is the function name
 	repeat: repeat,
@@ -193,7 +171,10 @@ module.exports = {
 	algebraicToRowCol: algebraicToRowCol,
 	placeLetter: placeLetter,
 	placeLetters: placeLetters,
-	boardToString: boardToString	
+	boardToString: boardToString,	
+	isBoardFull: isBoardFull,
+	flip: flip,
+	flipCells: flipCells
 }
 
 
