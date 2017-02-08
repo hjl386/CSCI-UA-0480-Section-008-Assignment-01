@@ -97,9 +97,38 @@ function placeLetters(board, letter, ...algebraicNotation){
 }
 
 function boardToString(board){
+	let bS = " ";
+	const len = board.length;
+	const size = Math.sqrt(len);
+	let wall = "";
+	let j = 0;
+	let k = size;
+	for (let i = 0; i < size; i++){
+		bS = bS.concat((String.fromCodePoint(32, 32, i+65)) + " ");
+	}	
+	bS = bS.concat('\n' + " ");
+	for (let i = 0; i < size; i++){
+		wall = wall.concat("+---");
+	}
+	bS = bS.concat(wall + "+" + '\n');
+	for(let i = 1; i < size+1; i++){
+		bS = bS.concat(i);
+		while(j < k){
+			bS = bS.concat("| " + board[j] + " ");
+			j++;
+		}
+		j = size * i;
+		k = size * (i+1);
+		bS = bS.concat("|" + '\n' + " " + wall + "+" + '\n');
+	}
+	return bS;
+}
+/*
+function boardToString(board){
 //Returns a string represntation of the board, makes the board
 	const len = board.length;
 	const wH = Math.sqrt(len);
+
 	const rowA = [];
 	const colA = [];
 	let stringBoard = " ";
@@ -125,8 +154,35 @@ function boardToString(board){
 		stringBoard = colA[a] + " ";
 	}
 
-}
+	let colName = "  ";
+	for (let i = 0; i < wH; i++){
+		colName = colName.concat(String.fromCodePoint(i+65, 32, 32, 32));
+	}
+	let boarder = Array(wH + 1).join("+---");
+	
+	const boardS = colName + '\n' + boarder + "+";
+	return boardS;
 
+	let boardStr = "    ";
+	for (let i = 0; i < wH; i++){
+		boardStr = boardStr.concat(String.fromCodePoint(i+65, 32, 32, 32, 32));
+	}
+	const boarder = Array(wH+1).join("  +---") + "  +" + '\n';
+	let roWall = "";
+	for (let i = 1; i < wH+1; i++){
+		roWall = roWall.concat(i + " " +  Array(wH+1).join("|     ") + "|" + '\n' + boarder);
+	}
+	boardStr = boardStr + '\n' + boarder + roWall;
+	/*const b = board;
+	for (let i = 0; i < len; i ++){
+		b[i] = boardStr[i];
+	}
+	return boardStr;	
+	for (let i = 0 ; i < len; i++){
+		if (board[i] !== " ");
+	}
+}
+*/
 module.exports = {
 	//The first term can be named anything, the second is the function name
 	repeat: repeat,
