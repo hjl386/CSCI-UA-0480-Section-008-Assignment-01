@@ -10,13 +10,13 @@ function repeat(value, n){
 }
 
 function generateBoard(rows, columns, initialCellValue=" "){
-//Creates an array of size rows * columns with default values of " " 
-	const array = [];
-	const numEle = rows * columns;
-	for (let i = 0; i < numEle; i++){
-		array.push(initialCellValue);
+//Creates an array of size rows * columns with default values of " "
+	if(rows !== columns){
+		return undefined;
+	} else {
+		const array = repeat(initialCellValue, rows*columns);
+		return array;
 	}
-	return array;
 }
 
 function rowColToIndex(board, rowNumber, columnNumber){
@@ -44,15 +44,87 @@ function setBoardCell(board, letter, row, col){
 }
 
 function algebraicToRowCol(algebraicNotation){
-	if(algebraicNotation.length !== 2){
+//Returns an object containing the row and col properties, takes in a string representing algebraic Notation and converts it into row and column format
+	const len = algebraicNotation.length;
+	const s = algebraicNotation.split("");
+	if(len !== 2 && len !== 3){
 		return undefined;
-	} else if(isNan(algebraicNotation.charAt(1)){
+	} else if(!isNaN(s[0])){
 		return undefined;
-	} else if(typeof(c.charAt(0)) !== 'string'){
+	} else if(isNaN(s[1]) && isNaN(s[2])){
 		return undefined;
-	} else {
-		
 	}
+	else {
+		let col = s[0];
+		for(let i = 65; i < 91; i++){
+			if (s[0].toUpperCase().charCodeAt(0) === i){
+				col = i-65;		
+			} 	
+		}
+		let row = "";
+		for(let a = 1; a < len; a++){
+			row += s[a];
+		}
+		const rowPI = parseInt(row) - 1;
+		const boardObj = {row: rowPI, col: col};
+		return boardObj;
+	}
+}
+
+function placeLetter(board, letter, algebraicNotation){
+//Returns a single dimensional Array representing the board where the cell at row and col is set to the value of letter using the algebraicNotation
+	const b = algebraicToRowCol(algebraicNotation);
+	const arr = setBoardCell(board, letter, b.row, b.col);
+	return arr;
+}
+
+function placeLetters(board, letter, ...algebraicNotation){
+//Same as placeLetter function except it accepts multiple arguments 
+	const b = [...algebraicNotation];
+	const arr = board;
+	for (let i = 0; i < b.length; i++){
+		//b[i] = placeLetter(board, letter, b[i]);
+		//arr.push(b[i][i]);
+		let temp = [];
+		temp = placeLetter(board, letter, b[i]);
+		for (let v = 0; v < temp.length; v++){
+			if(temp[v] === letter){
+				arr[v] = letter;
+			}
+		}
+	}
+	return arr;
+}
+
+function boardToString(board){
+//Returns a string represntation of the board, makes the board
+	const len = board.length;
+	const wH = Math.sqrt(len);
+	const rowA = [];
+	const colA = [];
+	let stringBoard = " ";
+	for (let i = 1; i < wH+1; i++){
+		rowA.push(i);
+		colA.push(i);		
+	}	
+	colA.forEach(n => {
+		colA[n-1] = String.fromCharCode(colA[n-1]+64);
+	});
+	for(let a = 0; a < wH; a++){
+		//console.log(colA[a] + " ");
+		stringBoard = stringBoard.append(colA[a]);		
+	}
+	const border = Array(wH+1).join("+---");
+	console.log(border + "+");
+	const wall = Array(wh+1).join("|  ");
+	for(let c = 0; c < wH; c++){
+		console.log(rowA[c] + wall + "|" + '\n'); 
+	}
+	console.log(border + "+");
+	for(let a = 0; a < wH; a++){
+		stringBoard = colA[a] + " ";
+	}
+
 }
 
 module.exports = {
@@ -62,7 +134,10 @@ module.exports = {
 	rowColToIndex: rowColToIndex,
 	indexToRowCol: indexToRowCol,
 	setBoardCell: setBoardCell,
-	algebraicToRowCol: algebraicToRowCol
+	algebraicToRowCol: algebraicToRowCol,
+	placeLetter: placeLetter,
+	placeLetters: placeLetters,
+	boardToString: boardToString	
 }
 
 
