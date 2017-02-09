@@ -49,11 +49,11 @@ function algebraicToRowCol(algebraicNotation){
 	const s = algebraicNotation.split("");
 	if(len !== 2 && len !== 3){
 		return undefined;
-	} else if(!isNaN(s[0])){
+	} /*else if(!isNaN(s[0])){
 		return undefined;
-	} else if(isNaN(s[1]) && isNaN(s[2])){
+	} else if(isNaN(s[1]) || isNaN(s[2])){
 		return undefined;
-	}
+	} */
 	else {
 		let col = s[0];
 		for(let i = 65; i < 91; i++){
@@ -105,7 +105,8 @@ function boardToString(board){
 	let j = 0;
 	let k = size;
 	for (let i = 0; i < size; i++){
-		bS = bS.concat((String.fromCodePoint(32, 32, 32, i+65)));
+		bS = bS.concat("   " + (String.fromCodePoint(i+65)));
+		//bS = bS.concat((String.fromCodePoint(32, 32, i+65)));
 	}	
 	bS = bS.concat('\n' + " ");
 	for (let i = 0; i < size; i++){
@@ -174,7 +175,12 @@ console.log(boardToString(board));
 board = flipCells(board, [[[0,0],[0,1]],[[1,1]]]);
 //board = flip(board, 0, 0);
 console.log(boardToString(board));
+
+let board = generateBoard(24, 24);
+const b = boardToString(board);
+console.log(b);
 */
+
 /*
 function getCellsToFlip(board, lastRow, lastCol){
 //Returns the 3D array of the pieces that will get flipped, same line pieces are grouped together
@@ -310,13 +316,14 @@ function getCellsToFlip(board, lastRow, lastCol){
 	} else if (val === "O"){
 		opp = "X";
 	}
+	//Checking in the North Direction 
 	let arrN = [];
 	let counterN = 0;
 	let n = index-size;
-	for (let i = 0; i < size; i++){
+	for (let i = 0; i < (lastrow); i++){
 		if(counterN === 0){
-			if (lastRow === 0){break;}
-			else if(n < 0){break;}
+			//if (lastRow === 0){break;} For loop checks it for me
+			//else if(n < 0){break;}
 			else if(board[n] === empty){break;}
 			else if(board[n] === val){break;}
 			else if(board[n] === opp){ 
@@ -325,19 +332,21 @@ function getCellsToFlip(board, lastRow, lastCol){
 			}				
 		}
 		else if(counterN > 0){
-			if(board[n] === empty){break;}
-			else if(board[n] === opp){
-				counter++;
-				n-=size;
-			} else if(n < 0){
-				break;	
+			if(n < 0){ //Might be redundant due to for loop iteration check
+				break;
+			} else {
+				if(board[n] === empty){break;}
+				else if(board[n] === opp){
+					counter++;
+					n-=size;
+				} else if(board[n] === val){
+					for(let j = 1; j < (counterN+1); j++){
+						let obj = indexToRowCol(board, index-(j*size));
+						arrN.push([obj.row, obj.col]);
+					}
+					i = lastrow; //In order to pervent re addings 
+				} 
 			}
-			else if(board[n] === val){
-				for(let j = 1; j < counterN+1; j++){
-					let obj = indexToRowCol(board, index-(j*size));
-					arrN.push([obj.row, obj.col]);
-				}
-			} 
 		}
 	}
 }
