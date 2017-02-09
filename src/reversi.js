@@ -143,8 +143,10 @@ function flip(board, row, col){
 	} else {
 		if(board[i] === "X"){
 			board = setBoardCell(board, "O", row, col);
+			//return board;
 		} else if (board[i] === "O"){
 			board = setBoardCell(board, "X", row, col);
+			//return board;
 		} 	
 		return board;
 	}
@@ -153,13 +155,26 @@ function flip(board, row, col){
 function flipCells(board, cellsToFlip){
 //Passing in the baord and a 3D array, flip the values insde to the opposite and return a single dimensional array.	
 	const arr = cellsToFlip.join().split(",");
+//	console.log(arr);
 	let i = 0;
+//	let b = board;
 	while(i < arr.length){
-		board = flip(board, arr[i+1], arr[i]);
+		board = flip(board, Number(arr[i]), Number(arr[i+1]));
 		i += 2;	
 	}
 	return board;
 }
+
+/*
+let board = generateBoard(4, 4, " ");
+board = setBoardCell(board, "X", 0, 0);
+board = setBoardCell(board, "X", 0, 1);
+board = setBoardCell(board, "X", 1, 1);
+console.log(boardToString(board));
+board = flipCells(board, [[[0,0],[0,1]],[[1,1]]]);
+//board = flip(board, 0, 0);
+console.log(boardToString(board));
+*/
 
 module.exports = {
 	//The first term can be named anything, the second is the function name
