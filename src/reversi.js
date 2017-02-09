@@ -175,7 +175,173 @@ board = flipCells(board, [[[0,0],[0,1]],[[1,1]]]);
 //board = flip(board, 0, 0);
 console.log(boardToString(board));
 */
+/*
+function getCellsToFlip(board, lastRow, lastCol){
+//Returns the 3D array of the pieces that will get flipped, same line pieces are grouped together
+	let arrN = [];
+	let arrW = [];
+	let arrE = [];
+	let arrS = [];
+	let arrNW = [];
+	let arrNE = [];
+	let arrSW = [];
+	let arrSE = [];
+	const ix = rowColToIndex(board, lastRow, lastCol);
+	const val = board[ix];
+	const len = board.length;
+	const size = Math.sqrt(len);
+	let opp = "";
+	if (board[ix] === "X"){
+		opp = "O";
+	} else if (board[ix] === "O"){
+		opp = "X";
+	}
+	let s = ix+size;
+	for (let i = 0; i < size; i++){
+		if(val === board[s] && ((s) < len)){
+			//Checking arrS, downwards
+			break;
+		} else if(val !== board[s] && ((s) < len)){
+			const obj = indexToRowCol(board, s);
+			arrS.push([obj.row, obj.col]);
+		}
+		s+=size;
+	}	
+	let n = ix-size;	
+	for (let i = 0; i < size; i++){
+		if(val === board[n] && ((n) >= 0)){
+			//Checking arrN, upwards
+			break;
+		} else if(val !== board[n] && ((n) >= 0)){
+			const obj = indexToRowCol(board, n);
+			arrN.push(obj.row, obj.col);
+		}
+		n-=size;
+	}	
+	let e = ix-1;
+	for (let i = 0; i < size; i++){
+		if(val === board[e] && (e > ((lastRow * size)-1))){
+			//Checking arrE, eastwards
+			break;
+		} else if(val !== board[e] && (e > ((lastRow * size)-1))){
+			const obj = indexToRowCol(board, e);
+			arrE.push(obj.row, obj.col); 
+		}
+		e-=1;		
+	}
+	let w = ix+1;
+	for (let i = 0; i < size; i++){
+		if(val === board[w] && (w < ((lastRow * size)+size))){
+			//Checking arrW, westwards
+			break;
+		} else if(val !== board[w] && (w < ((lastRow * size)+size))){
+			const obj = indexToRowCol(board, w);
+			arrW.push(obj.row, obj.col); 
+		}
+		w+=1;		
+	}
+	let nW = ix-size-1;
+	for (let i = 0; i < size; i++){
+		if(val === board[nW] && (nW >= 0)){
+			//Checking arrNW, northwesttwards
+			break;
+		} else if(val !== board[nW] && (nW >= 0)){
+			const obj = indexToRowCol(board, nW);
+			arrNW.push(obj.row, obj.col); 
+		}
+		nW-=(size-1);		
+	}
+	let nE = ix-size+1;
+	for (let i = 0; i < size; i++){
+		if(val === board[nE] && (nE >= 0)){
+			//Checking arrNE, northeastwards
+			break;
+		} else if(val !== board[nE] && (nE >= 0)){
+			const obj = indexToRowCol(board, nE);
+			arrNE.push(obj.row, obj.col); 
+		}
+		nE-=(size+1);		
+	}
+	let sE = ix+size+1;
+	for (let i = 0; i < size; i++){
+		if(val === board[sE] && (sE < len)){
+			//Checking arrSE, southeastwards
+			break;
+		} else if(val !== board[sE] && (sE < len)){
+			const obj = indexToRowCol(board, sE);
+			arrSE.push(obj.row, obj.col); 
+		}
+		sE+=(size+1);		
+	}
+	let sW = ix+size-1;
+	for (let i = 0; i < size; i++){
+		if(val === board[sW] && (sW >= 0)){
+			//Checking arrSW, southwestwards
+			break;
+		} else if(val !== board[sW] && (sW < len)){
+			const obj = indexToRowCol(board, sW);
+			arrSW.push(obj.row, obj.col); 
+		}
+		sW+=(size-1);		
+	}
+	let farr = [];
+	farr.push(arrN);
+	farr.push(arrS);
+	farr.push(arrW);
+	farr.push(arrE);
+	farr.push(arrNW);
+	farr.push(arrNE);
+	farr.push(arrSW);
+	farr.push(arrSE);
+	return farr;
+}
+*/
 
+function getCellsToFlip(board, lastRow, lastCol){
+	let finalArr = [];
+	const empty = " ";
+	const len = board.length;
+	const size = Math.sqrt(len);
+	const index = rowColToIndex(board, lastRow, lastCol);
+	const val = board[index];
+	let opp = "";
+	if (val === "X"){
+		opp = "O";
+	} else if (val === "O"){
+		opp = "X";
+	}
+	let arrN = [];
+	let counterN = 0;
+	let n = index-size;
+	for (let i = 0; i < size; i++){
+		if(counterN === 0){
+			if (lastRow === 0){break;}
+			else if(n < 0){break;}
+			else if(board[n] === empty){break;}
+			else if(board[n] === val){break;}
+			else if(board[n] === opp){ 
+				counter++;
+				n-=size;
+			}				
+		}
+		else if(counterN > 0){
+			if(board[n] === empty){break;}
+			else if(board[n] === opp){
+				counter++;
+				n-=size;
+			} else if(n < 0){
+				break;	
+			}
+			else if(board[n] === val){
+				for(let j = 1; j < counterN+1; j++){
+					let obj = indexToRowCol(board, index-(j*size));
+					arrN.push([obj.row, obj.col]);
+				}
+			} 
+		}
+	}
+}
+ 
 module.exports = {
 	//The first term can be named anything, the second is the function name
 	repeat: repeat,
@@ -189,7 +355,8 @@ module.exports = {
 	boardToString: boardToString,	
 	isBoardFull: isBoardFull,
 	flip: flip,
-	flipCells: flipCells
+	flipCells: flipCells,
+	getCellsToFlip: getCellsToFlip
 }
 
 
