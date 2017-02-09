@@ -309,7 +309,7 @@ function getCellsToFlip(board, lastRow, lastCol){
 		if(counterN === 0){
 			//if (lastRow === 0){break;} For loop checks it for me
 			//else if(n < 0){break;}
-			else if(board[n] === empty){break;}
+			if(board[n] === empty){break;}
 			else if(board[n] === val){break;}
 			else if(board[n] === opp){ 
 				counterN++;
@@ -346,7 +346,7 @@ function getCellsToFlip(board, lastRow, lastCol){
 		if(counterS === 0){
 			//if (lastRow === (size-1)){break;} For loop checks it for me
 			//else if(s > index){break;}
-			else if(board[s] === empty){break;}
+			if(board[s] === empty){break;}
 			else if(board[s] === val){break;}
 			else if(board[s] === opp){ 
 				counterS++;
@@ -383,7 +383,7 @@ function getCellsToFlip(board, lastRow, lastCol){
 		if(counterW === 0){
 			//if (lastCol === 0){break;} For loop checks it for me
 			//else if((w % size) === 0){break;}
-			else if(board[w] === empty){break;}
+			if(board[w] === empty){break;}
 			else if(board[w] === val){break;}
 			else if(board[w] === opp){ 
 				counterW++;
@@ -420,7 +420,7 @@ function getCellsToFlip(board, lastRow, lastCol){
 		if(counterE === 0){
 			//if ((size-1)-lastCol === 0){break;} For loop checks it for me
 			//else if((e+1 % size) === 0){break;}
-			else if(board[e] === empty){break;}
+			if(board[e] === empty){break;}
 			else if(board[e] === val){break;}
 			else if(board[e] === opp){ 
 				counterE++;
@@ -452,30 +452,30 @@ function getCellsToFlip(board, lastRow, lastCol){
 //Checking in the North West Direction
 	let arrNW = [];
 	let counterNW = 0;
-	let nw = index-1;
+	let nw = index-(size+1);
 	for (let i = 0; i < lastCol; i++){
-		if(counterW === 0){
+		if(counterNW === 0){
 			//if (lastCol === 0){break;} For loop checks it for me
-			//else if((w % size) === 0){break;}
-			else if(board[w] === empty){break;}
-			else if(board[w] === val){break;}
-			else if(board[w] === opp){ 
-				counterW++;
-				w-=1;
+			//else if((nw < 0){break;}
+			if(board[nw] === empty){break;} //Can add i = lastCol to completely end this loop 
+			else if(board[nw] === val){break;}
+			else if(board[nw] === opp){ 
+				counterNW++;
+				nw-=size+1;
 			}				
 		}
-		else if(counterW > 0){
-			if((w%size)===0){ //Might be redundant due to for loop iteration check
+		else if(counterNW > 0){
+			if(nw < 0){ //Might be redundant due to for loop iteration check
 				break;
 			} else {
-				if(board[w] === empty){break;}
-				else if(board[w] === opp){
-					counterW++;
-					w-=1;
-				} else if(board[w] === val){
-					for(let j = 1; j < (counterW+1); j++){
-						let obj = indexToRowCol(board, index-j);
-						arrW.push([obj.row, obj.col]);
+				if(board[nw] === empty){break;}
+				else if(board[nw] === opp){
+					counterNW++;
+					nw-=size+1;
+				} else if(board[nw] === val){
+					for(let j = 1; j < (counterNW+1); j++){
+						let obj = indexToRowCol(board, index-(j*(size+1)));
+						arrNW.push([obj.row, obj.col]);
 					}
 					i = lastCol; //In order to pervent re addings 
 				} 
@@ -486,8 +486,117 @@ function getCellsToFlip(board, lastRow, lastCol){
 	if(arrNW.length > 0){
 		finalArr.push(arrNW);
 	}
-
-
+//Checking in the North East Direction
+	let arrNE = [];
+	let counterNE = 0;
+	let ne = index-(size-1);
+	for (let i = 0; i < size-1-lastCol; i++){
+		if(counterNE === 0){
+			//if (size-1-lastCol === 0){break;} For loop checks it for me
+			//else if(((ne+1)%size) ===  0){break;}
+			if(board[ne] === empty){break;} //Can add i = lastCol to completely end this loop 
+			else if(board[ne] === val){break;}
+			else if(board[ne] === opp){ 
+				counterNE++;
+				ne-=size-1;
+			}				
+		}
+		else if(counterNE > 0){
+			if((ne+1) % size === 0){ //Might be redundant due to for loop iteration check
+				break;
+			} else {
+				if(board[ne] === empty){break;}
+				else if(board[ne] === opp){
+					counterNE++;
+					ne-=size-1;
+				} else if(board[ne] === val){
+					for(let j = 1; j < (counterNE+1); j++){
+						let obj = indexToRowCol(board, index-(j*(size-1)));
+						arrNE.push([obj.row, obj.col]);
+					}
+					i = size-1-lastCol; //In order to pervent re addings 
+				} 
+			}
+		}
+	}
+	//Filling the final array to be returned 
+	if(arrNE.length > 0){
+		finalArr.push(arrNE);
+	}
+//Checking in the South East Direction
+	let arrSE = [];
+	let counterSE = 0;
+	let se = index+(size+1);
+	for (let i = 0; i < size-1-lastCol; i++){
+		if(counterSE === 0){
+			//if (size-1-lastCol === 0){break;} For loop checks it for me
+			//else if(se > index){break;}
+			if(board[se] === empty){break;} //Can add i = lastCol to completely end this loop 
+			else if(board[se] === val){break;}
+			else if(board[se] === opp){ 
+				counterSE++;
+				se+=size+1;
+			}				
+		}
+		else if(counterSE > 0){
+			if(se > index){ //Might be redundant due to for loop iteration check
+				break;
+			} else {
+				if(board[se] === empty){break;}
+				else if(board[se] === opp){
+					counterSE++;
+					se+=size+1;
+				} else if(board[se] === val){
+					for(let j = 1; j < (counterSE+1); j++){
+						let obj = indexToRowCol(board, index+(j*(size+1)));
+						arrSE.push([obj.row, obj.col]);
+					}
+					i = size-1-lastCol; //In order to pervent re addings 
+				} 
+			}
+		}
+	}
+	//Filling the final array to be returned 
+	if(arrSE.length > 0){
+		finalArr.push(arrSE);
+	}
+//Checking in the South West Direction
+	let arrSW = [];
+	let counterSW = 0;
+	let sw = index+(size-1);
+	for (let i = 0; i < lastCol; i++){
+		if(counterSW === 0){
+			//if (lastCol === 0){break;} For loop checks it for me
+			//else if((sw % size) === 0){break;}
+			if(board[sw] === empty){break;} //Can add i = lastCol to completely end this loop 
+			else if(board[sw] === val){break;}
+			else if(board[sw] === opp){ 
+				counterSW++;
+				sw+=size-1;
+			}				
+		}
+		else if(counterSW > 0){
+			if((sw % size) === 0){ //Might be redundant due to for loop iteration check
+				break;
+			} else {
+				if(board[sw] === empty){break;}
+				else if(board[sw] === opp){
+					counterSW++;
+					sw+=size-1;
+				} else if(board[sw] === val){
+					for(let j = 1; j < (counterSW+1); j++){
+						let obj = indexToRowCol(board, index+(j*(size-1)));
+						arrSW.push([obj.row, obj.col]);
+					}
+					i = lastCol; //In order to pervent re addings 
+				} 
+			}
+		}
+	}
+	//Filling the final array to be returned 
+	if(arrSW.length > 0){
+		finalArr.push(arrSW);
+	}
 
 	return finalArr;
 }
