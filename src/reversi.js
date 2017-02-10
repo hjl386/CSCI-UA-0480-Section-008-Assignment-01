@@ -180,7 +180,7 @@ function getCellsToFlip(board, lastRow, lastCol){
 	} else if (val === "O"){
 		opp = "X";
 	}
-//Checking in the North Direction 
+//Checking in the North REDO  Direction 
 	let arrN = [];
 	let counterN = 0;
 	let n = index-size;
@@ -188,11 +188,13 @@ function getCellsToFlip(board, lastRow, lastCol){
 		if(counterN === 0){
 			//if (lastRow === 0){break;} For loop checks it for me
 			//else if(n < 0){break;}
+			finalArr.push(2);
 			if(board[n] === empty){break;}
 			else if(board[n] === val){break;}
 			else if(board[n] === opp){ 
 				counterN++;
 				n-=size;
+				finalArr.push(1);
 			}				
 		}
 		else if(counterN > 0){
@@ -207,8 +209,9 @@ function getCellsToFlip(board, lastRow, lastCol){
 					for(let j = 1; j < (counterN+1); j++){
 						let obj = indexToRowCol(board, index-(j*size));
 						arrN.push([obj.row, obj.col]);
+						finalArr.push(1);
 					}
-					i = lastrow; //In order to pervent re addings 
+					i = lastRow; //In order to pervent re addings 
 				} 
 			}
 		}
@@ -217,6 +220,48 @@ function getCellsToFlip(board, lastRow, lastCol){
 	if(arrN.length > 0){
 		finalArr.push(arrN);
 	}
+/*
+//Checking in the North Direction 
+	let arrN = [];
+	let counterN = 0;
+	let n = index-size;
+	for (let i = 0; i < (lastRow); i++){
+		if(counterN === 0){
+			//if (lastRow === 0){break;} For loop checks it for me
+			//else if(n < 0){break;}
+			finalArr.push(2);
+			if(board[n] === empty){break;}
+			else if(board[n] === val){break;}
+			else if(board[n] === opp){ 
+				counterN++;
+				n-=size;
+				finalArr.push(1);
+			}				
+		}
+		else if(counterN > 0){
+			if(n < 0){ //Might be redundant due to for loop iteration check
+				break;
+			} else {
+				if(board[n] === empty){break;}
+				else if(board[n] === opp){
+					counterN++;
+					n-=size;
+				} else if(board[n] === val){
+					for(let j = 1; j < (counterN+1); j++){
+						let obj = indexToRowCol(board, index-(j*size));
+						arrN.push([obj.row, obj.col]);
+						finalArr.push(1);
+					}
+					i = lastRow; //In order to pervent re addings 
+				} 
+			}
+		}
+	}
+	//Filling the final array to be returned 
+	if(arrN.length > 0){
+		finalArr.push(arrN);
+	}
+*/
 //Checking in the South Direction
 	let arrS = [];
 	let counterS = 0;
@@ -244,8 +289,9 @@ function getCellsToFlip(board, lastRow, lastCol){
 					for(let j = 1; j < (counterS+1); j++){
 						let obj = indexToRowCol(board, index+(j*size));
 						arrS.push([obj.row, obj.col]);
+						finalArr.push(1);
 					}
-					i = (size-1)-lastrow; //In order to pervent re addings 
+					i = (size-1)-lastRow; //In order to pervent re addings 
 				} 
 			}
 		}
@@ -281,6 +327,7 @@ function getCellsToFlip(board, lastRow, lastCol){
 					for(let j = 1; j < (counterW+1); j++){
 						let obj = indexToRowCol(board, index-j);
 						arrW.push([obj.row, obj.col]);
+						finalArr.push(1);
 					}
 					i = lastCol; //In order to pervent re addings 
 				} 
@@ -318,6 +365,7 @@ function getCellsToFlip(board, lastRow, lastCol){
 					for(let j = 1; j < (counterE+1); j++){
 						let obj = indexToRowCol(board, index+j);
 						arrE.push([obj.row, obj.col]);
+						finalArr.push(1);
 					}
 					i = size-1-lastCol; //In order to pervent re addings 
 				} 
@@ -355,6 +403,7 @@ function getCellsToFlip(board, lastRow, lastCol){
 					for(let j = 1; j < (counterNW+1); j++){
 						let obj = indexToRowCol(board, index-(j*(size+1)));
 						arrNW.push([obj.row, obj.col]);
+						finalArr.push(1);
 					}
 					i = lastCol; //In order to pervent re addings 
 				} 
@@ -392,6 +441,7 @@ function getCellsToFlip(board, lastRow, lastCol){
 					for(let j = 1; j < (counterNE+1); j++){
 						let obj = indexToRowCol(board, index-(j*(size-1)));
 						arrNE.push([obj.row, obj.col]);
+						finalArr.push(1);
 					}
 					i = size-1-lastCol; //In order to pervent re addings 
 				} 
@@ -429,6 +479,7 @@ function getCellsToFlip(board, lastRow, lastCol){
 					for(let j = 1; j < (counterSE+1); j++){
 						let obj = indexToRowCol(board, index+(j*(size+1)));
 						arrSE.push([obj.row, obj.col]);
+						finalArr.push(1);
 					}
 					i = size-1-lastCol; //In order to pervent re addings 
 				} 
@@ -466,6 +517,7 @@ function getCellsToFlip(board, lastRow, lastCol){
 					for(let j = 1; j < (counterSW+1); j++){
 						let obj = indexToRowCol(board, index+(j*(size-1)));
 						arrSW.push([obj.row, obj.col]);
+						//finalArr.push(3);
 					}
 					i = lastCol; //In order to pervent re addings 
 				} 
@@ -476,10 +528,38 @@ function getCellsToFlip(board, lastRow, lastCol){
 	if(arrSW.length > 0){
 		finalArr.push(arrSW);
 	}
-
+//	finalArr.push(1);
 	return finalArr;
 }
- 
+
+let board = generateBoard(4, 4);
+board = setBoardCell(board, "X", 2, 0);
+board = setBoardCell(board, "X", 0, 3);
+board = setBoardCell(board, "O", 2, 1);
+board = setBoardCell(board, "O", 2, 2);
+board = setBoardCell(board, "O", 1, 3);
+let s = boardToString(board);
+console.log(s);
+let a = getCellsToFlip(board, 2, 3);
+console.log(a);
+
+function isValidMove(board, letter, row, col){
+//Returns true if the intended move is valid and returns false otherwise	
+	const index = rowColToIndex(board, row, col);
+	const arr = getCellsToFlip(board, row, col);
+//	console.log(arr);
+//	console.log(arr.length);
+	if(index >= board.length){
+		return false;
+	} else if(board[index] !== " "){
+		return false;
+	} else if(arr.lenght === 0){
+		return false;
+	} else {
+		return true;
+	}
+}
+
 module.exports = {
 	//The first term can be named anything, the second is the function name
 	repeat: repeat,
@@ -494,7 +574,8 @@ module.exports = {
 	isBoardFull: isBoardFull,
 	flip: flip,
 	flipCells: flipCells,
-	getCellsToFlip: getCellsToFlip
+	getCellsToFlip: getCellsToFlip,
+	isValidMove: isValidMove
 }
 
 
